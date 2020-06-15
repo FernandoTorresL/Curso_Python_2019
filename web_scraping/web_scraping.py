@@ -3,7 +3,7 @@ from bs4 import BeautifulSoup
 import urllib
 
 def run():
-  for i in range(1, 6):
+  for i in range(1, 51):
     response = requests.get('https://xkcd.com/{}'.format(i))
     soup = BeautifulSoup(response.content, 'html.parser')
     image_container = soup.find(id='comic')
