@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-
+import csv
 
 class Contact:
 
@@ -17,10 +17,15 @@ class ContactBook:
     contact = Contact(name, phone, email)
     self._contacts.append(contact)
     print('name: {}, phone: {}, email: {}'.format(name, phone, email))
+    self._save()
 
   def show_all(self):
+    print('--- * --- * --- * --- * --- * --- * --- * --- * ---')
+    print('--- * --- * --- * --- * --- * --- * --- * --- * ---')
     for contact in self._contacts:
       self._print_contact(contact)
+    print('--- * --- * --- * --- * --- * --- * --- * --- * ---')
+    print('--- * --- * --- * --- * --- * --- * --- * --- * ---')
 
   def delete(self, name):
     for idx, contact in enumerate(self._contacts):
@@ -31,7 +36,6 @@ class ContactBook:
       self._not_found()
 
   def _print_contact(self, contact):
-    print('--- * --- * --- * --- * --- * --- * --- * --- * ---')
     print('Nombre: {}'.format(contact.name))
     print('Teléfono: {}'.format(contact.phone))
     print('Email: {}'.format(contact.email))
@@ -45,14 +49,30 @@ class ContactBook:
     else:
       self._not_found()
 
+  def _save(self):
+    with open('contacts.csv', 'w') as f:
+      writer = csv.writer(f)
+      writer.writerow( ('name', 'phone', 'email') )
+
+      for contact in self._contacts:
+        writer.writerow( (contact.name, contact.phone, contact.email) )
+
   def _not_found(self):
     print('***')
     print('No encontrado!')
     print('***')
 
 def run():
-
   contact_book = ContactBook()
+
+  with open('contacts.csv', 'r') as f:
+    reader = csv.reader(f)
+    for idx, row in enumerate(reader):
+      if idx == 0:
+        continue
+
+      contact_book.add(row[0], row[1], row[2])
+
 
   while True:
     command = str(input('''
@@ -85,13 +105,12 @@ def run():
       contact_book.delete(name)
 
     elif command == 'l':
-      print('listar contactos')
       contact_book.show_all()
 
     elif command == 's':
       break
     else:
-      print('Comando no encontrado.')
+      print('Contacto no encontrado.')
 
 
 if __name__ == '__main__':
